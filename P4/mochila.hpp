@@ -12,18 +12,12 @@ using namespace std;
 
 struct material;
 
-void mochilaDinamica();
+void mochila();
 
 void ordenar(vector<material> &materiales);
 
-void mostrarTabla(int capacidad, int cantidad, vector<vector<int>> matriz);
+void mostrarTabla(int capacidad, vector<vector<int>> matriz, vector<material> &materiales);
 
-void resolverMochila(int capacidad, int cantidad, vector<vector<int>> matriz, vector<material> &materiales);
-
-void Quicksort(vector<material> &materiales, int start, int end );
-
-int Partition(vector<material> &materiales, int start, int end );
-
-
+void resolverMochila(int capacidad, vector<vector<int>> matriz, vector<material> &materiales);
 
 #endif
