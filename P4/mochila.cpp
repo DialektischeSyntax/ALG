@@ -14,6 +14,7 @@ void mochila(){
     int capacidad;
     vector<material> vMaterials;
     material m;
+    cout<<endl<<endl;
     cout << "Introduzca la capacidad de la mochila"<<endl;
     cin>>capacidad;
     cin.ignore();

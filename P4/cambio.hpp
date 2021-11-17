@@ -18,8 +18,8 @@ void devolverCambio(int cambio, vector<vector<float>> matriz, vector<float> &sis
 
 void ordenar(vector<float> &sistemaMonetario);
 
-void mostrarTabla( int cambio, vector<vector<float>> matriz, vector<float> &sistemaMonetario);
+void mostrarTabla(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
 
-void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> matriz);
+void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
 
 #endif

@@ -7,7 +7,10 @@ void cambio(int opt){
     float inf = INFINITY;
     int cambio, moneda, i = 0;
     string cadena;
-    cout<<"elija el tipo:"<<endl;
+    cout<<endl<<endl;
+    cout<<"elija el tipo:"<<endl<<endl;
+    cout<<"1. Monedas y billetes ilimitados"<<endl<<endl;
+    cout<<"2. Monedas y billetes limitados. Usted introduce la cantidad de cada tipo."<<endl<<endl;
     cin>>opt;
     vector<float> sistemaMonetario;
     fstream file;
@@ -23,6 +26,7 @@ void cambio(int opt){
         /*for (auto& v : sistemaMonetario)
         cout << v << "\n";
         */
+        cout<<endl<<endl;
         cout<<"Introduzca el cambio"<<endl;
         cin>>cambio;
         cin.ignore();
@@ -43,37 +47,36 @@ void cambio(int opt){
 
     else if (opt == 2){
         vector<int> cantidad;
-        cantidad.clear();
         cantidad.resize(sistemaMonetario.size());
         int dinero = 0, j = cambio = 0;
         cantidad[0] = 0;
+        cout<<endl;
+        cout<<"Introduzca el cambio:"<<endl;
+        cin>>cambio;
+        cin.ignore();
+        cout<<endl;
         for(int i = 1; i < sistemaMonetario.size(); i++){
             if(sistemaMonetario[i] > 200){
                 cout<<"Introduzca la cantidad de billetes de " << (sistemaMonetario[i] / 100) <<" euros disponible:"<<endl;
                 cin >> dinero;
                 cin.ignore();
-                cambio+=(dinero*100);
-                cantidad.push_back(dinero);
+                cantidad[i] = dinero;
             }
             else if(sistemaMonetario[i] == 200 || sistemaMonetario[i] == 100){
                 cout<<"Introduzca la cantidad de monedas de " << (sistemaMonetario[i] / 100) <<" euros disponible:"<<endl;
                 cin >> dinero;
                 cin.ignore();
-                cambio+=(dinero*100);
-                cantidad.push_back(dinero);
+                cantidad[i] = dinero;
                 }
             else{cout<<"Introduzca la cantidad de monedas de " << sistemaMonetario[i] <<" centimos disponible:"<<endl;
                 cin >> dinero;
                 cin.ignore();
-                cambio+=dinero;
-                cantidad.push_back(dinero);
+                cantidad[i] = dinero;
             }
         }
-        cout<<"ha salido de las preguntas"<<endl;
-        vector<vector<float>> matriz;
+        vector<vector<float>> matriz(sistemaMonetario.size());
         for(int i = 0 ; i < sistemaMonetario.size(); ++i)
         {
-            cout<<"haciendo resize"<<endl;
             matriz[i].resize(cambio + 1);
         }
         for(i = 0; i < cambio + 1; i++){                //Inicialización de la primera fila a inf.
@@ -81,10 +84,10 @@ void cambio(int opt){
         }
         for(i = 0; i < sistemaMonetario.size(); i++){   //Inicialización de la primera columna a 0.
             matriz[i][0] = 0;
-            cout<<"inicializando"<<endl;
         }
-        cout<<endl;
+        cout<<endl<<endl;
         devolverCambioLimitado(cantidad, cambio, sistemaMonetario, matriz);
+        mostrarTabla(cantidad, cambio, sistemaMonetario, matriz);
     }
     
     /*
@@ -213,48 +216,37 @@ void devolverCambio(int cambio, vector<vector<float>> matriz, vector<float> &sis
     cout<<endl<<endl;
 }
 
-void mostrarTabla( int cambio, vector<vector<float>> matriz, vector<float> &sistemaMonetario){
-    for(int i = 0; i < sistemaMonetario.size(); i++){
-        for(int j = 0; j < cambio + 1; j++){
-            cout<<matriz[i][j]<< " ";
-        }
-        cout << endl;
-    }
-}
-
-void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> matriz){
+void mostrarTabla(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz){
     float inf = INFINITY;
-    int usado = 0;
-    cout<<"ha entrado en CambioLimitado"<<endl;
-    for(int i = 1; i < sistemaMonetario.size(); i++){
-        for(int j = 1; j < (cambio + 1); j++){
-            if(sistemaMonetario[i] <= j){
-                if((1 + matriz[i][j - sistemaMonetario[i]])< matriz[i][j] && (1 + (int)j/sistemaMonetario[i] <= cantidad[i])){
-                    matriz[i][j] = 1 + matriz[i][j - sistemaMonetario[i]];
-                }
-                else if((int)((j-sistemaMonetario[i])/sistemaMonetario[i]) + matriz[i - 1][j - (int)((j-sistemaMonetario[i])/sistemaMonetario[i])] < matriz[i - 1][j]){ 
-                    matriz[i][j] = (int)((j-sistemaMonetario[i])/sistemaMonetario[i]) + matriz[i - 1][j - (int)((j-sistemaMonetario[i])/sistemaMonetario[i])];
-                }
-            }
-            else{matriz[i][j] = matriz[i-1][j];}
-            }
-    }
+    int dinero = 0, j = cambio;
+    int imprime = 0;
     
-    cout<<endl<< "      ";
+    cout<<endl<< "         ";
 
     for(int i = 0; i < cambio + 1; i++){
         if(i < 10){
-            cout << i << "   ";
+            cout << i << "    ";
         }
         else{
-            cout << i << "  ";
+            cout << i << "   ";
         }
     }
 
     cout<<endl<<endl;
 
+    //Con este bucle for se imprime de manera ordenada la matriz para visualizar y entender la solución.
+
     for(int i = 0; i < sistemaMonetario.size(); i++){
         if(sistemaMonetario[i] < 10){
+            cout << sistemaMonetario[i] << "        ";
+        }
+        else if(sistemaMonetario[i] < 100){
+            cout << sistemaMonetario[i] << "       ";
+        }
+        else if(sistemaMonetario[i] < 1000){
+            cout << sistemaMonetario[i] << "      ";
+        }
+        else if(sistemaMonetario[i] < 10000){
             cout << sistemaMonetario[i] << "     ";
         }
         else{
@@ -263,32 +255,72 @@ void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &si
         for(int j = 0; j < cambio + 1; j++){
 
             if(matriz[i][j] == inf){
-                cout<<matriz[i][j]<< "    ";
+                cout<<matriz[i][j]<< "  ";
             }
             else if(matriz[i][j] > 9){
-                cout<<matriz[i][j]<< "     ";
+                cout<<matriz[i][j]<< "   ";
             }
-            else {cout<<matriz[i][j]<< "      ";}
+            else {cout<<matriz[i][j]<< "    ";}
         }
         cout << endl;
     }
 
-    cout << "se ha devuelto el cambio en " << matriz[sistemaMonetario.size()-1][cambio] << " monedas:"<<endl;
-    int dinero = 0, j = cambio;
+    cout<<endl;
+    cout << "se ha devuelto el cambio en " << matriz[sistemaMonetario.size()-1][cambio] << " monedas:"<<endl<<endl;
+
     for(int i = sistemaMonetario.size() - 1; i > 0; i--){
             if(matriz[i][j] != matriz[i-1][j] && dinero < cambio){
+
+                /*
+                Con este primer if else averiguamos qué monedas y qué cantidad de ellas se utilizan en el cambio. Hay que variar la manera 
+                en que se hallan dicha información respecto al cambio con monedas ilimitadas. Tenemos dos opciones, partiendo de que una moneda se ha utilizado
+                cuando varía del valor en la fila anterior en la misma columna. Si se han utilizado todas las monedas (ahí usamos el vector cantidad) entonces saltamos
+                un total de cantidad[i] * sistemaMonetario[i], es decir el precio total obtenido usando cantidad[i] monedas. Si no se han utilizado todas las monedas,
+                entonces se ha usado el número entero que da dividir j (el cambio total) entre el valor de la moneda.
+                */
+
+                if(cantidad[i] * sistemaMonetario[i] < j){
+                    dinero += cantidad[i] * sistemaMonetario[i];
+                    imprime = cantidad[i];
+                }
+                else{
+                    dinero += (int)((j/sistemaMonetario[i]) * sistemaMonetario[i]);
+                    imprime = (int)(j/sistemaMonetario[i]);
+                }
+
+                j -= sistemaMonetario[i] * imprime;
+                /*
+                Aquí solo filtramos los valores para ver si son billetes, monedas de euro o monedas de céntimo.
+                */
+
                 if(sistemaMonetario[i] > 200){
-                    cout<< ((int)(j / sistemaMonetario[i])) << " billetes de " << (sistemaMonetario[i] / 100) <<" euros, ";
+                    cout<< imprime << " billetes de " << (sistemaMonetario[i] / 100) <<" euros, ";
                 }
                 else if(sistemaMonetario[i] == 200 || sistemaMonetario[i] == 100){
-                    cout<< ((int)(j / sistemaMonetario[i])) << " monedas de " << (sistemaMonetario[i] / 100) <<" euros, ";
+                    cout<< imprime << " monedas de " << (sistemaMonetario[i] / 100) <<" euros, ";
                 }
-                else{cout<< ((int)(j / sistemaMonetario[i])) << " monedas de " << (sistemaMonetario[i]) <<" centimos, "; }
-
-                j -= sistemaMonetario[i];
-                dinero += sistemaMonetario[i];
+                else{cout<< imprime << " monedas de " << (sistemaMonetario[i]) <<" centimos, "; }
             }
     }
-    cout<<endl;
+    cout<<endl<<endl<<endl;
+}
 
+void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz){
+
+    for(int i = 1; i < sistemaMonetario.size(); i++){
+        for(int j = 1; j < (cambio + 1); j++){
+            if(sistemaMonetario[i] <= j){
+                if(((int)j/sistemaMonetario[i]) <=  cantidad[i]){
+                    if(1 + matriz[i][j - sistemaMonetario[i]] < matriz[i-1][j]){
+                        matriz[i][j] = 1 + matriz[i][j - sistemaMonetario[i]];
+                    }
+                    else{matriz[i][j] = matriz[i-1][j];}
+                }
+                else if (cantidad[i] == 0){matriz[i][j] = matriz[i-1][j];}
+                
+                else{matriz[i][j] = matriz[i][sistemaMonetario[i] * cantidad[i]] + matriz[i-1][j - (sistemaMonetario[i] * cantidad[i])];}
+            }
+            else{matriz[i][j] = matriz[i-1][j];}
+        }
+    }
 }
