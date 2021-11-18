@@ -14,10 +14,8 @@ struct material;
 
 void mochila();
 
-void ordenar(vector<material> &materiales);
+void mostrarTabla(int capacidad, vector<vector<int>> &matriz, vector<material> &materiales);
 
-void mostrarTabla(int capacidad, vector<vector<int>> matriz, vector<material> &materiales);
-
-void resolverMochila(int capacidad, vector<vector<int>> matriz, vector<material> &materiales);
+void resolverMochila(int capacidad, vector<vector<int>> &matriz, vector<material> &materiales);
 
 #endif

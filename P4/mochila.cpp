@@ -12,7 +12,7 @@ void mochila(){
     string etiqueta, volumen, coste;
     int i = 0;
     int capacidad;
-    vector<material> vMaterials;
+    vector<material> materiales;
     material m;
     cout<<endl<<endl;
     cout << "Introduzca la capacidad de la mochila"<<endl;
@@ -27,47 +27,41 @@ void mochila(){
         m.etiqueta = stoi(etiqueta);
         m.volumen = stoi(volumen);
         m.coste = stoi(coste);
-        vMaterials.push_back(m);
+        materiales.push_back(m);
     }
     file.close();
     m = {0, 0, 0};
-    ordenar(vMaterials);
-    vMaterials.insert(vMaterials.begin(), m);
-    vector<vector<int>> matriz(vMaterials.size());
-    for(int i = 0 ; i < vMaterials.size(); ++i)
+    std::sort(materiales.begin(), materiales.end(), [&](const auto& m1, const auto& m2) { return m1.volumen < m2.volumen; });
+    materiales.insert(materiales.begin(), m);
+    vector<vector<int>> matriz(materiales.size());
+    
+    //Asignamos el tamaño correcto a la matriz
+    for(int i = 0 ; i < materiales.size(); ++i)
     {
         matriz[i].resize(capacidad + 1);
     }
-    for(i = 0; i < vMaterials.size(); i++){
+
+    //Inicializamos la primera columna a 0
+    for(i = 0; i < materiales.size(); i++){
         matriz[i][0] = 0;
     }
-    // Inicialización de todas las columnas en cero
+    //Inicializamos la primera fila a 0
     for(i = 0; i < capacidad + 1; i++){
         matriz[0][i] = 0;
     }
-    resolverMochila(capacidad, matriz, vMaterials);
-    //mostrarTabla(capacidad, matriz, vMaterials);
+    resolverMochila(capacidad, matriz, materiales);
+    mostrarTabla(capacidad, matriz, materiales);
 }
 
-void ordenar(vector<material> &materiales)
-{
-    int j, i = 0;
-    material aux;
-    while(i < materiales.size()){
-        for(j=0 ; j < materiales.size()-1; j++ )
-        {
-            if(materiales[j].volumen > materiales[j+1].volumen)
-            {
-                aux = materiales[j];
-                materiales[j] = materiales [j+1];
-                materiales[j+1] = aux;
-            }
-        }
-        i++;
-    }
-}
+/*Resolución de la mochila teniendo los materiales ordenados por volumen y valorándolos en función de su precio.
+  Si el material cabe en la mochila y su coste sumado al mejor camino que existía hasta la capacidad de la mochila - el volumen del material
+  materiales[i].coste + matriz[i-1][j - materiales[i].volumen])es mejor que el mejor camino hasta ahora (matriz[i-1][j]) entonces el valor de matriz[i][j]
+  será la suma que se ha evaluado en el bucle if. Si no, será el mejor camino hasta la fecha matriz[i-1][j]. Es decir, matriz[i][j] adopta el mayor valor entre
+  los dos valores que se evalúan en el if, pues se busca la maximización del coste de la mochila.
 
-void resolverMochila(int capacidad, vector<vector<int>> matriz, vector<material> &materiales){
+  Si un material no cabe en la mochila se asigna a esa casilla el mejor valor hasta la fecha.
+*/
+void resolverMochila(int capacidad, vector<vector<int>> &matriz, vector<material> &materiales){
 
     for(int i = 1; i < materiales.size(); i++){
         for(int j = 1; j < capacidad + 1; j++){
@@ -80,7 +74,17 @@ void resolverMochila(int capacidad, vector<vector<int>> matriz, vector<material>
             else{ matriz[i][j] = matriz[i-1][j]; }
         }
     }
+}
 
+/*
+mostrarTabla muestra la matriz o tabla para visualizar y entender la solución. Los dos primeros bucles for son para la muestra de la matriz, formateando la salida.
+El siguiente es el que encuentra los materiales usados. El método utilizado es recorrer del final al principio la matriz de la solución, y teniendo en cuenta
+que los materiales no se pueden repetir, cada vez que en una columna cambiaba un valor significaba que la casilla por donde se estaba iterando pertenecía a un material
+usado. Entonces nos movíamos a la fila de antes, y tantas columnas a la izquierda como volumen tuviera el material y seguíamos iterando por la misma columna hacia atrás
+hasta encontrar un valor diferente. Paramos cuando ya hubiéramos alcanzado toda la capacidad de la mochila o bien hubiésemos llegado al fin de la tabla.
+*/
+
+void mostrarTabla( int capacidad, vector<vector<int>> &matriz, vector<material> &materiales){
     cout<<endl<< "      ";
 
     for(int i = 0; i < capacidad + 1; i++){
@@ -123,14 +127,4 @@ void resolverMochila(int capacidad, vector<vector<int>> matriz, vector<material>
             }
     }
     cout<<endl;
-
-}
-
-void mostrarTabla( int capacidad, vector<vector<int>> matriz, vector<material> &materiales){
-    for(int i = 0; i < materiales.size(); i++){
-        for(int j = 0; j < capacidad + 1; j++){
-            cout<<matriz[i][j]<< " ";
-        }
-        cout << endl;
-    }
 }

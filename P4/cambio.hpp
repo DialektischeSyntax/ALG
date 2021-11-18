@@ -12,14 +12,14 @@
 
 using namespace std;
 
-void cambio(int opt);
+void cambio(int &opt);
 
-void devolverCambio(int cambio, vector<vector<float>> matriz, vector<float> &sistemaMonetario);
+void devolverCambio(int &cambio, vector<vector<float>> &matriz, vector<float> &sistemaMonetario);
 
-void ordenar(vector<float> &sistemaMonetario);
+void mostrarTabla(int &cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
 
-void mostrarTabla(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
+void mostrarTablaCambioLimitado(vector<float> &sistemaMonetario, vector<vector<float>> &matriz, vector<int> &cantidad, int &cambio);
 
-void devolverCambioLimitado(vector<int> &cantidad, int cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
+void devolverCambioLimitado(vector<int> &cantidad, int &cambio, vector<float> &sistemaMonetario, vector<vector<float>> &matriz);
 
 #endif
